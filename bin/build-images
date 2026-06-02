@@ -31,11 +31,13 @@ for dockerfile in "${dockerfiles[@]}"; do
 
   filename="$(basename "${dockerfile}")"
   variant="${filename#Dockerfile.}"
-  tag="${image_name}:${tag_prefix}-${variant}"
+  tag="${image_name}:${tag_prefix}"
+  variant_tag="${image_name}:${tag_prefix}-${variant}"
 
-  echo "Building ${dockerfile} as ${tag}"
+  echo "Building ${dockerfile} as ${tag} and ${variant_tag}"
   docker build \
     --file "${dockerfile}" \
     --tag "${tag}" \
+    --tag "${variant_tag}" \
     "${repo_root}"
 done
