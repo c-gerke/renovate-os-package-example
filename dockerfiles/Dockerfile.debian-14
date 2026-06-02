@@ -1,4 +1,4 @@
-FROM debian:forky
+FROM debian:forky@sha256:befd9e93c04b967a92edfd7cb64ab1fc367c85769f80d358ad11467a5fd40ade
 
 # renovate: datasource=debian-14 depName=curl
 ARG CURL_VERSION=8.18.0-2

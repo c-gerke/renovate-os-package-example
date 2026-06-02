@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:24.04@sha256:db6914f1ac0c566f57857641e2214e3f3e453cb340cc2c890ed6c2b7b81b8a00
 
 # renovate: datasource=ubuntu-2404 depName=curl
 ARG CURL_VERSION=8.5.0-2ubuntu10.6
