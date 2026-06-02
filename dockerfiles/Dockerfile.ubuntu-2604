@@ -1,0 +1,18 @@
+FROM ubuntu:26.04
+
+# renovate: datasource=ubuntu-2604 depName=curl
+ARG CURL_VERSION=8.18.0-1ubuntu2
+# renovate: datasource=ubuntu-2604 depName=wget
+ARG WGET_VERSION=1.24.5-2ubuntu1
+# renovate: datasource=ubuntu-2604 depName=openssl
+ARG OPENSSL_VERSION=3.5.3-1ubuntu2
+# renovate: datasource=ubuntu-2604 depName=git
+ARG GIT_VERSION=1:2.51.0-1ubuntu1
+
+RUN apt-get update && \
+    apt-get install -y \
+      curl="${CURL_VERSION}" \
+      wget="${WGET_VERSION}" \
+      openssl="${OPENSSL_VERSION}" \
+      git="${GIT_VERSION}" && \
+    rm -rf /var/lib/apt/lists/*

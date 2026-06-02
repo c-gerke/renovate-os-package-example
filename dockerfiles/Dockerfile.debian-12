@@ -1,0 +1,18 @@
+FROM debian:12
+
+# renovate: datasource=debian-12 depName=curl
+ARG CURL_VERSION=7.88.1-10+deb12u5
+# renovate: datasource=debian-12 depName=wget
+ARG WGET_VERSION=1.21-1+deb11u1
+# renovate: datasource=debian-12 depName=openssl
+ARG OPENSSL_VERSION=3.0.17-1~deb12u2
+# renovate: datasource=debian-12 depName=git
+ARG GIT_VERSION=1:2.30.2-1+deb11u2
+
+RUN apt-get update && \
+    apt-get install -y \
+      curl="${CURL_VERSION}" \
+      wget="${WGET_VERSION}" \
+      openssl="${OPENSSL_VERSION}" \
+      git="${GIT_VERSION}" && \
+    rm -rf /var/lib/apt/lists/*

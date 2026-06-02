@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+image_name="${IMAGE_NAME:-renovate-os-packages}"
+tag_prefix="${IMAGE_TAG:-local}"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if [ "$#" -eq 0 ]; then
+  mapfile -t dockerfiles < <(find "${repo_root}/dockerfiles" -maxdepth 1 -type f -name 'Dockerfile.*' | sort)
+else
+  dockerfiles=()
+  for dockerfile in "$@"; do
+    if [[ "${dockerfile}" = /* ]]; then
+      dockerfiles+=("${dockerfile}")
+    else
+      dockerfiles+=("${repo_root}/${dockerfile}")
+    fi
+  done
+fi
+
+if [ "${#dockerfiles[@]}" -eq 0 ]; then
+  echo "No Dockerfiles found to build."
+  exit 0
+fi
+
+for dockerfile in "${dockerfiles[@]}"; do
+  if [ ! -f "${dockerfile}" ]; then
+    echo "Dockerfile not found: ${dockerfile}" >&2
+    exit 1
+  fi
+
+  filename="$(basename "${dockerfile}")"
+  variant="${filename#Dockerfile.}"
+  tag="${image_name}:${tag_prefix}-${variant}"
+
+  echo "Building ${dockerfile} as ${tag}"
+  docker build \
+    --file "${dockerfile}" \
+    --tag "${tag}" \
+    "${repo_root}"
+done

@@ -1,0 +1,74 @@
+name: Build Dockerfiles
+
+on:
+  pull_request:
+    paths:
+      - "dockerfiles/Dockerfile.*"
+      - "bin/build-images"
+      - ".github/workflows/build-dockerfiles.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "dockerfiles/Dockerfile.*"
+      - "bin/build-images"
+      - ".github/workflows/build-dockerfiles.yml"
+
+jobs:
+  changed-dockerfiles:
+    name: Detect changed Dockerfiles
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfiles: ${{ steps.changed.outputs.dockerfiles }}
+      count: ${{ steps.changed.outputs.count }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find changed Dockerfiles
+        id: changed
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base_sha="${{ github.event.pull_request.base.sha }}"
+            head_sha="${{ github.event.pull_request.head.sha }}"
+          else
+            base_sha="${{ github.event.before }}"
+            head_sha="${{ github.sha }}"
+          fi
+
+          mapfile -t dockerfiles < <(
+            git diff --name-only "${base_sha}" "${head_sha}" -- 'dockerfiles/Dockerfile.*' |
+              sort
+          )
+
+          if [ "${#dockerfiles[@]}" -eq 0 ]; then
+            echo "dockerfiles=[]" >> "${GITHUB_OUTPUT}"
+            echo "count=0" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          printf '%s\n' "${dockerfiles[@]}"
+          json="$(printf '%s\n' "${dockerfiles[@]}" | jq -R . | jq -sc .)"
+          echo "dockerfiles=${json}" >> "${GITHUB_OUTPUT}"
+          echo "count=${#dockerfiles[@]}" >> "${GITHUB_OUTPUT}"
+
+  build:
+    name: Build ${{ matrix.dockerfile }}
+    needs: changed-dockerfiles
+    if: needs.changed-dockerfiles.outputs.count != '0'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile: ${{ fromJson(needs.changed-dockerfiles.outputs.dockerfiles) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build changed Dockerfile
+        run: ./bin/build-images "${{ matrix.dockerfile }}"
