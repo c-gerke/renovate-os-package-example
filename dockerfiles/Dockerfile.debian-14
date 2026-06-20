@@ -1,13 +1,13 @@
 FROM debian:forky
 
 # renovate: datasource=debian-14 depName=curl
-ARG CURL_VERSION=8.18.0-2
+ARG CURL_VERSION=8.20.0-5
 # renovate: datasource=debian-14 depName=wget
-ARG WGET_VERSION=1.21.3-1+deb12u1
+ARG WGET_VERSION=1.25.0-2
 # renovate: datasource=debian-14 depName=openssl
-ARG OPENSSL_VERSION=3.5.4-1
+ARG OPENSSL_VERSION=3.6.3-1
 # renovate: datasource=debian-14 depName=git
-ARG GIT_VERSION=1:2.51.0-1
+ARG GIT_VERSION=1:2.53.0-1
 
 RUN apt-get update && \
     apt-get install -y \
