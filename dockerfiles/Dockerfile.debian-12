@@ -1,4 +1,4 @@
-FROM debian:12
+FROM debian:12@sha256:30482e873082e906a4908c10529180aefb6f77620aea7404b909829fadc5d168
 
 # renovate: datasource=debian-12 depName=curl
 ARG CURL_VERSION=7.88.1-10+deb12u5
