@@ -1,4 +1,4 @@
-FROM debian:13
+FROM debian:trixie-20260623@sha256:d07d1b51c39f51188e60be9b64e6bf769fa94e187f092bc32b91305cfa34ba5a
 
 # renovate: datasource=debian-13 depName=curl
 ARG CURL_VERSION=8.14.1-1
