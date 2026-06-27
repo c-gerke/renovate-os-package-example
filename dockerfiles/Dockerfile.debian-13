@@ -1,7 +1,7 @@
 FROM debian:13
 
 # renovate: datasource=debian-13 depName=curl
-ARG CURL_VERSION=8.14.1-1
+ARG CURL_VERSION=8.14.1-2+deb13u3
 # renovate: datasource=debian-13 depName=wget
 ARG WGET_VERSION=1.21.3-1+deb12u1
 # renovate: datasource=debian-13 depName=openssl
